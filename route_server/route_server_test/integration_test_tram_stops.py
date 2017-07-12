@@ -6,6 +6,7 @@ from unittest import TestCase, main
 from route_server import DataGateway
 import json
 import pandas as pd
+import json
 """
 Testing data access is notoriously difficult; rather than mocking the
 data, these tests use a known data in ./data/test_data.
@@ -70,12 +71,26 @@ class TestDataGateway(TestCase):
         self.assertEqual({2613, 2536}, stop_ids)
 
     def test_get_leg_counts(self):
-        expected = [
-            {'from_halt_id' : 0, 'to_halt_id' : 1, 'count' : 1}
-        ]
+        #Structure - expected = {'halt_id_0' : 0, 'halt_id_1' : 1, 'frequncy' : 1}
+        #First load the expected values, and store each pair (halt_id_0, halt_id_1)
+        #in a dictionary. This will be used to compare against the actual values
+        expected = pd.read_csv('./data/test_data/results_ten_thou_test_get_leg_counts.csv',
+            sep='\t')
+        count_dict = dict()
+        for halt_id_0, halt_id_1, count in expected.values:
+            _min = min(halt_id_0, halt_id_1)
+            _max = max(halt_id_0, halt_id_1)
+            count_dict[(_min, _max)] = count
 
-        expected = pd.read_csv('./data/test_data/results_ten_thou_test_get_leg_counts.csv')
-        print(expected.columns) 
+        #Do the real call, and then compare the results against the expected
+        legcounts = dg.get_leg_counts(linie=2)
+        lcounts = json.loads(legcounts)
+        self.assertEqual(len(count_dict.keys()), len(lcounts))
+        for realcount in lcounts:
+
+            _min = realcount['halt_id_0']
+            _max = realcount['halt_id_1']
+            self.assertEqual(count_dict[_min, _max], realcount['frequency'])
 
 if __name__ == '__main__':
     main(exit=False)

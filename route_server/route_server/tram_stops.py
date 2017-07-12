@@ -46,7 +46,13 @@ class DataGateway:
         self.halte_punkt['GPS_Latitude'] = self.halte_punkt['GPS_Latitude'].apply(parseFloat)
 
         self.df = pd.read_csv(soll_ist_path)
+        #TODO - This will likely have nasty effects...
         self.df = self.df.dropna()
+        #When analysing journey times for from/to halts, order  should not be taken in to account
+        #Therefore, set up tw columns min(halt_id_von, halt_id_nach),
+        #and max(halt_id_von, halt_id_nach) to remove this ordering
+        self.df['halt_id_0'] = self.df[['halt_id_von','halt_id_nach']].min(axis=1)
+        self.df['halt_id_1'] = self.df[['halt_id_von','halt_id_nach']].max(axis=1)
         self._filter_badies(bad_halt_ids)
 
     def get_tram_stops(self):
@@ -59,6 +65,15 @@ class DataGateway:
 
     def get_lines(self):
         return self.df['linie'].unique()
+
+    def get_leg_counts(self, linie):
+        """Return the count of each from/to halte_id pair. Ese the unordered
+        (halt_id_0, halt_id_1) for countings the pairs.
+        Result will be a list of json with the structure:
+        [{'halt_id_0' : int, 'halt_id_1' : int, 'frequency' : int}]"""
+        tmp = self.df[self.df['linie']==linie]
+        frequencies = tmp.groupby(['halt_id_0','halt_id_1']).size().reset_index(name='frequency')
+        return frequencies.to_json(orient='records')
 
     def get_route_items(self, linie):
         route_filtered =self.df[self.df['linie']==linie]
@@ -114,7 +129,8 @@ def configure():
     get_tram_stops = gateway.get_tram_stops
     get_geo_loc = gateway.get_geo_loc
     search_route_by = gateway.create_searcher()
-    return get_tram_stops, get_geo_loc, search_route_by
+    get_leg_counts = gateway.get_leg_counts
+    return get_tram_stops, get_geo_loc, search_route_by, get_leg_counts
 
 
 """

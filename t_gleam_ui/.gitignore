@@ -8,11 +8,10 @@ coverage
 
 # production
 build
-
+*.log*
 # misc
 .DS_Store
 .env
-npm-debug.log
 yarn.lock
 .editorconfig
 docker-compose.yaml

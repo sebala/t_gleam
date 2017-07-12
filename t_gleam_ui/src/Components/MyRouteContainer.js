@@ -13,11 +13,6 @@ function getMarkers (route){
            </Popup>
          </Marker>;
   });
-  //let markers = [];
-
-  //markers.push(markerWithPopup(route[0]));
-
-  //markers.push(markerWithPopup(route.slice(-1)[0]));
 
   return markers;
 };
@@ -52,8 +47,6 @@ getMarkers.propTypes = {
   route: PropTypes.array
 }
 
-
-//export default connect(mapStateToProps)(MyRouteContainer);
 module.exports ={
   MyRouteContainer : connect(mapStateToProps)(MyRouteContainer),
   getMarkers : getMarkers,

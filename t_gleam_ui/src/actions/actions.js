@@ -123,4 +123,18 @@ function endstopSelected(dispatch, selection){
 	});
 }
 
-export { standard_json_handler, find_route, switchGlobalMapMarkers, switchView, tramstopSelected, endstopSelected};
+const NEW_LINE_STATS_AVAILABLE = 'NEW_LINE_STATS_AVAILABLE';
+function loadTramLineStats(dispatch, linie_num){
+		const rest_url = BASE_URL + '/line_stats/' + linie_num;
+		fetch(rest_url)
+			.then(standard_json_handler)
+			.then((line_stats) => {
+			dispatch({
+				type: NEW_LINE_STATS_AVAILABLE ,
+				line_stats: line_stats
+			});
+		});
+}
+
+export { standard_json_handler, find_route, switchGlobalMapMarkers,
+	switchView, tramstopSelected, endstopSelected, loadTramLineStats};
