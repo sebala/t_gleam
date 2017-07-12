@@ -1,0 +1,8 @@
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+__pycache__
+.ipynb_checkpoints
+*.pyc
+*.pkl
+hints.txt
+*.xls*
+*.csv*
