@@ -6,7 +6,7 @@ from unittest import TestCase, main
 from route_server import DataGateway
 import json
 import pandas as pd
-import json
+
 """
 Testing data access is notoriously difficult; rather than mocking the
 data, these tests use a known data in ./data/test_data.
@@ -32,16 +32,16 @@ class TestDataGateway(TestCase):
         self.assertEqual(list, type(empty))
 
     def test_bad_halt_ids_excluded_geo_loc(self):
-        should_be_empty_json_list = dg.get_geo_loc(2300)
-        empty = json.loads(should_be_empty_json_list)
-        self.assertEqual(0, len(empty))
-        self.assertEqual(list, type(empty))
+        locs = dg.get_geo_locs()
+        my_locs = {loc.halt_id : loc for loc in locs}
+        self.assertTrue(2300 not in my_locs)
 
     def test_geo_loc_returns_returns_first_match(self):
-        list_len_one = dg.get_geo_loc(143)
-        geo_loc = json.loads(list_len_one)[0]
-        self.assertEqual(47.360017, geo_loc['GPS_Latitude'])
-        self.assertEqual(8.456337, geo_loc['GPS_Longitude'])
+        locs = dg.get_geo_locs()
+        my_locs = {loc.halt_id : loc for loc in locs}
+        geo_loc = my_locs[143]
+        self.assertEqual(47.360035, geo_loc.GPS_Latitude)
+        self.assertEqual(8.456297, geo_loc.GPS_Longitude)
 
     def test_get_lines(self):
         lines = dg.get_lines()
@@ -84,13 +84,23 @@ class TestDataGateway(TestCase):
 
         #Do the real call, and then compare the results against the expected
         legcounts = dg.get_leg_counts(linie=2)
-        lcounts = json.loads(legcounts)
-        self.assertEqual(len(count_dict.keys()), len(lcounts))
-        for realcount in lcounts:
+        self.assertEqual(len(count_dict.keys()), len(legcounts.jounery_legs))
+        for realcount in legcounts.jounery_legs:
 
-            _min = realcount['halt_id_0']
-            _max = realcount['halt_id_1']
-            self.assertEqual(count_dict[_min, _max], realcount['frequency'])
+            _min = realcount.halt_id_0
+            _max = realcount.halt_id_1
+            freq = realcount.decorations['frequency']
+            self.assertEqual(count_dict[_min, _max], freq)
+
+
+    def test_set_primary_stop(self):
+        """Check that each halt_id has a primary stop set correctly
+        for it.
+        Take a look in to the test data spreadsheet to get the expected data
+        See DataGateway._set_primary_stop"""
+        locs = dg.get_geo_locs()
+        my_locs = {loc.halt_id : loc for loc in locs}
+        self.assertEqual(13469, my_locs[143].halt_punkt_id)
 
 if __name__ == '__main__':
     main(exit=False)

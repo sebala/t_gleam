@@ -7,10 +7,12 @@ from functools import update_wrapper
 from flask_cors import CORS, cross_origin
 from  .tram_stops import configure
 #from  .preloaded import get_tram_stops, get_geo_loc, search_route_by
+from .messages import to_json_message, JourneyLeg, JourneyInfo
+
 
 app = Flask(__name__)
-
-get_tram_stops, get_geo_loc, search_route_by, get_leg_counts = configure()
+app.config['DEBUG'] = True
+get_tram_stops, get_geo_loc, search_route_by, get_leg_counts, get_geo_locs = configure()
 
 CORS(app)
 
@@ -40,13 +42,24 @@ def geo_loc(halt_id):
     )
     return response
 
+@app.route('/geo_locs')
+def geo_locs():
+    data = get_geo_locs()
+    response = app.response_class(
+        response=to_json_message(data),
+        status=200,
+        mimetype='application/json'
+    )
+    return response
+
 @app.route('/line_stats/<int:linie_id>')
 def tram_line_stats(linie_id):
-    #hello_msg = dict()
-    #hello_msg['hello'] ='world'
+    app.logger.debug('tram_line_stats' + str(linie_id))
     result = get_leg_counts(linie_id)
+    json_result = to_json_message(result)
+    app.logger.debug('result::'+ json_result)
     response = app.response_class(
-        response=result,
+        response=json_result,
         status=200,
         mimetype='application/json'
     )
@@ -56,10 +69,15 @@ def tram_line_stats(linie_id):
 def search_route(from_halt_id, to_halt_id):
     route = search_route_by(from_halt_id, to_halt_id)
     stop_ids = [x[0] for x in route.extract_path()]
-    geos ='[' + ',\n'.join(map(get_geo_loc, stop_ids)) + ']'
+    #geos ='[' + ',\n'.join(map(get_geo_loc, stop_ids)) + ']'
+    paths = []
+    for s1, s2 in zip(stop_ids,stop_ids[1:]):
+        paths.append(JourneyLeg(s1, s2))
+
+    journey_info = JourneyInfo(paths)
 
     response = app.response_class(
-        response=geos,
+        response=to_json_message(journey_info),
         status=200,
         mimetype='application/json'
     )

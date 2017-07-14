@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 from route_server import Puzzle
-
+from .messages import GeoPath, GeoPosition, to_json_message
 def parseFloat(s):
     if type(s)==str:
         return float(s.replace(',','.'))
@@ -33,6 +33,22 @@ class DataGateway:
         hs = self.soll_ist_stops
         self.soll_ist_stops = hs[~(hs['halt_id'].isin(baddies))]
 
+    def _set_primary_stop(self):
+        """Each haltepunkt (stop) has multiple entries for
+        each halt_id. In order to collapse this down on a single
+        halt_id, define two criteria for setting "primary"
+        - if the stop is active ('halt_punkt_ist_aktiv')
+        - use the minimum halt_punkt_id for each halt_id
+        After this call, each halt_id should have a unique 'is_primary'
+        set"""
+        self.halte_punkt = self.halte_punkt[self.halte_punkt['halt_punkt_ist_aktiv']]
+        self.halte_punkt['is_primary'] = 0
+        hp = self.halte_punkt
+
+        idx = hp.groupby(['halt_id'])['halt_punkt_id'].transform(min)==hp['halt_punkt_id']
+
+        self.halte_punkt.loc[idx, 'is_primary'] = 1
+
     def __init__(self,
             haltestelle_path = './data/haltestelle.csv',
             haltepunkt_path = './data/haltepunkt.csv',
@@ -44,7 +60,7 @@ class DataGateway:
         self.halte_punkt = self.halte_punkt.dropna()
         self.halte_punkt['GPS_Longitude'] = self.halte_punkt['GPS_Longitude'].apply(parseFloat)
         self.halte_punkt['GPS_Latitude'] = self.halte_punkt['GPS_Latitude'].apply(parseFloat)
-
+        self._set_primary_stop()
         self.df = pd.read_csv(soll_ist_path)
         #TODO - This will likely have nasty effects...
         self.df = self.df.dropna()
@@ -56,7 +72,7 @@ class DataGateway:
         self._filter_badies(bad_halt_ids)
 
     def get_tram_stops(self):
-        a = self.soll_ist_stops[['halt_id','halt_lang']]
+        a = self.soll_ist_stops[['halt_id','halt_diva', 'halt_kurz', 'halt_lang', 'halt_ist_aktiv']]
         return a.to_json(orient='records')
 
     def get_tramstop(self, halt_id):
@@ -73,7 +89,18 @@ class DataGateway:
         [{'halt_id_0' : int, 'halt_id_1' : int, 'frequency' : int}]"""
         tmp = self.df[self.df['linie']==linie]
         frequencies = tmp.groupby(['halt_id_0','halt_id_1']).size().reset_index(name='frequency')
-        return frequencies.to_json(orient='records')
+        #return frequencies.to_json(orient='records')
+        from .messages import JourneyLeg, JourneyInfo
+        def to_JourneyLeg(row):
+            return JourneyLeg(
+                int(row[0]),
+                int(row[1]),
+                decorations={'frequency' : int(row[2])}
+            )
+
+        legs = list(map(to_JourneyLeg, frequencies.values))
+        journey = JourneyInfo(legs)
+        return journey
 
     def get_route_items(self, linie):
         route_filtered =self.df[self.df['linie']==linie]
@@ -81,10 +108,25 @@ class DataGateway:
         nach = route_filtered['halt_id_nach'].unique()
         return set(np.union1d(von,nach))
 
+    def get_geo_locs(self):
+        hp = self.halte_punkt
+        cond2 = hp['is_primary']==True
+        def to_GeoPosition(row):
+            return GeoPosition(
+                row['GPS_Latitude'],
+                row['GPS_Longitude'],
+                row['halt_id'],
+                row['halt_punkt_id'],
+                row['is_primary']
+            )
+        return hp[cond2].apply(to_GeoPosition, axis=1).tolist()
+
     def get_geo_loc(self, halt_id):
+        #TODO Remove this; clients should cache the results
         hp = self.halte_punkt
         res = hp[hp['halt_id']==halt_id]
         return res[['halt_id','GPS_Latitude', 'GPS_Longitude']][:1].to_json(orient='records')
+
 
     def create_searcher(self):
         df = self.df
@@ -130,7 +172,12 @@ def configure():
     get_geo_loc = gateway.get_geo_loc
     search_route_by = gateway.create_searcher()
     get_leg_counts = gateway.get_leg_counts
-    return get_tram_stops, get_geo_loc, search_route_by, get_leg_counts
+    get_geo_locs = gateway.get_geo_locs
+    return get_tram_stops, \
+            get_geo_loc, \
+            search_route_by, \
+            get_leg_counts, \
+            gateway.get_geo_locs
 
 
 """

@@ -4,7 +4,6 @@ import MyMap from './MyMap'
 import {Navbar, Layout} from './navBar'
 import TramList from './tramList';
 import RouteFinderView from './routeFinderView'
-import TramStopPicker from './TramStopPicker'
 const App = ({view}) => {
   let main = '';
   if (view==='ROUTE_FINDER'){

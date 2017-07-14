@@ -3,16 +3,16 @@ import { Map, TileLayer,  } from 'react-leaflet'
 import { connect } from 'react-redux'
 import {getMarkers, getPolylines} from './MyRouteContainer'
 
-const MyMap = ({route, showMarkers, lat, lng, zoom}) => {
+const MyMap = ({route, showMarkers, lat, lng, zoom, tramstop_geo_locs}) => {
     if(typeof route==='undefined'){
       route = [];
     }
     let markers = ''
     if (showMarkers){
-      markers = getMarkers(route);
+      markers = getMarkers(route, tramstop_geo_locs);
 
     }
-    const polylines = getPolylines(route);
+    const polylines = getPolylines(route, tramstop_geo_locs);
     const position = [lat, lng];
 
     return (
@@ -29,9 +29,16 @@ const MyMap = ({route, showMarkers, lat, lng, zoom}) => {
 }
 
 
-const MyMapContainer = ({ lng, lat, zoom, route, showMarkers }) => {
+const MyMapContainer = ({ lng, lat, zoom, route, showMarkers, tramstop_geo_locs }) => {
   return (
-    <MyMap zoom={zoom} lng={lng} lat={lat} route={route} showMarkers={showMarkers}/>
+    <MyMap
+      zoom={zoom}
+      lng={lng}
+      lat={lat}
+      route={route}
+      showMarkers={showMarkers}
+      tramstop_geo_locs={tramstop_geo_locs}
+    />
   )
 };
 function mapStateToProps(state){
@@ -39,8 +46,9 @@ function mapStateToProps(state){
     lat: state.lat,
     lng: state.lng,
     zoom: 13,
-    route: state.route,
-    showMarkers: state.shouldShowGlobalMarkers
+    route: state.screenStates[state.currentView].route,
+    showMarkers: state.shouldShowGlobalMarkers,
+    tramstop_geo_locs: state.tramstop_geo_locs
   }
 }
 

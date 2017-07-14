@@ -13,7 +13,21 @@ const initial_state = {
   lat: 47.376848,
   lng: 8.540508,
   trams: [],
-  currentTram: null
+  currentTram: null,
+  tramstops: [],
+  tramstop_geo_locs: {},
+  screenStates : {
+    'ROUTE_FINDER' : {
+      route : {
+        jounery_legs: []
+      }
+    },
+    'LINE_VIEW' : {
+      route : {
+        jounery_legs: []
+      }
+    }
+  }
 }
 
 
@@ -21,19 +35,23 @@ const reducer = (state, action) => {
   if (action.type===ActionTypes.SELECT_START) {
     return {
         ...state,
-        startTram :action.startTram
+        startTram :action.startTram,
+        pickStartTram: action.pickStartTram
       }
 
   }else if (action.type===ActionTypes.SELECT_END) {
     return {
         ...state,
-        endTram :action.endTram
+        endTram :action.endTram,
+        pickEndTram:action.pickEndTram
       }
   }else if (action.type===ActionTypes.ROUTE_LOADED) {
-    return {
-        ...state,
-        route :action.route
+    //state.screenStates[state.currentView].route = action.route
+    let new_state = {
+        ...state
       }
+      new_state.screenStates[new_state.currentView].route = action.route
+      return new_state
     }
   else if (action.type===ActionTypes.SHOW_GLOBAL_MAP_MARKERS){
     return {
@@ -46,6 +64,19 @@ const reducer = (state, action) => {
         currentView : action.newView
       }
     }
+    else if (action.type===ActionTypes.ALL_STOPS_AVAILABLE){
+      return {
+        ...state,
+        tramstops : action.tramstops
+      }
+    }else if (action.type===ActionTypes.ALL_GEOS_AVAILABLE){
+      return {
+        ...state,
+        tramstop_geo_locs : action.tramstop_geo_locs
+      }
+    }
+
+
 
   else{
     return state
@@ -54,8 +85,8 @@ const reducer = (state, action) => {
 
 const store = createStore(reducer, initial_state);
 
-
-
+ActionTypes.load_tramstops(store.dispatch)
+ActionTypes.load_geo_for_all_stops(store.dispatch)
 class RenderApp extends React.Component {
   render () {
     return (

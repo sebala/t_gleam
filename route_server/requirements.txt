@@ -3,6 +3,7 @@ pandas==0.20.2
 
 folium==0.3.0
 flask-cors
+jsonpickle
 
 bokeh
 matplotlib
