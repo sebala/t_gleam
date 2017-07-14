@@ -3,6 +3,7 @@ const BASE_URL = 'http://localhost:5000'
 
 function standard_json_handler(response){
 	if (!response.ok) {
+
 		throw Error('Something went wrong retreiving currency information :(');
 	}
 	return response.json();

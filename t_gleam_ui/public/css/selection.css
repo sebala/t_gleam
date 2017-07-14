@@ -20,7 +20,7 @@ html { background: transparent }
 }
 
 .ul_on_top{
-    z-index: 10000;
+    z-index: 1001;
 }
 .red_placeholder{
   flex: 1 1 auto;

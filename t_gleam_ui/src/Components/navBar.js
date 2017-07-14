@@ -8,7 +8,8 @@ const Layout = ({ main, navbar, debug }) => (
                 { navbar }
             </div>
         </div>
-        <div className="row content">
+        <div className="row container_moin"/>
+        <div className="row content ">
             <div className="col-xs main">
                 { main }
             </div>

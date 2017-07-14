@@ -6,13 +6,14 @@ import MyMap from './MyMap'
 
 const RouteFinderView = () => (
    <div>
-  <TramStopPicker/>
+
     <div className='row'>
-      <div className="col-md-2">
+      <div className="col-md-3">
         <ShowMarkersToggleContainer/>
+        <TramStopPicker/>
         <RouteList/>
       </div>
-      <div className="col-md-10">
+      <div className="col-md-9">
         <MyMap/>
       </div>
     </div>

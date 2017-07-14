@@ -60,9 +60,9 @@ class TramStopPicker extends React.Component {
 			}
 			return (
 					<div className="container_moin">
-						<p>Select stops</p>
+						<div className="container_moin"/>
 						<div className="row">
-							<div className="col-md-6 ul_on_top">
+							<div>
 									<Select ref="stateSelect"
 											autofocus options={options_list}
 											simpleValue
@@ -71,7 +71,10 @@ class TramStopPicker extends React.Component {
 											 onChange={val =>this.fromUpdateValue(val)}
 											 />
 							</div>
-							<div className="col-md-6 ul_on_top" >
+						</div>
+						<div className="row">
+
+							<div>
 									<Select ref="stateSelect"
 											autofocus options={options_list}
 											simpleValue
@@ -81,6 +84,7 @@ class TramStopPicker extends React.Component {
 											 />
 									</div>
 						</div>
+
 					</div>
 		);
 	}
