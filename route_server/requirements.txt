@@ -5,9 +5,11 @@ folium==0.3.0
 flask-cors
 jsonpickle
 
+numba
+scipy
 bokeh
 matplotlib
-
+typing
 nose
 nose-watch
 coverage
