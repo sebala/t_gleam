@@ -74,5 +74,12 @@ class JourneyInfoTest(TestCase):
         json_msg = to_json_message(self.journey_info)
         info_dict = json.loads(json_msg)
         self.assertTrue('decorations' in info_dict['jounery_legs'][0])
+
+    def test_serialized_dict(self):
+        halt_id = {'nearest_halt_id' : 1234}
+        js = to_json_message(halt_id)
+        nearest_dict = json.loads(js)
+        self.assertTrue('nearest_halt_id' in nearest_dict)
+        self.assertEqual(1234, nearest_dict['nearest_halt_id'])
 if __name__ == '__main__':
     main(exit=False)

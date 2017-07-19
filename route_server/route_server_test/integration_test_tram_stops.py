@@ -3,7 +3,7 @@
 # -*- coding: utf-8 -*-
 
 from unittest import TestCase, main
-from route_server import DataGateway
+from route_server import DataGateway, to_json_message
 import json
 import pandas as pd
 
@@ -22,7 +22,7 @@ be fine* *mwa-ha-ha*"""
 dg = DataGateway(haltestelle_path = './data/haltestelle.csv',
             haltepunkt_path = './data/haltepunkt.csv',
             soll_ist_path = './data/test_data/ten_thou.csv',
-            bad_halt_ids = (2300, 3010)
+            bad_halt_ids = (2300, 3010, 2251)
             )
 class TestDataGateway(TestCase):
     def test_bad_halt_ids_excluded(self):
@@ -30,6 +30,7 @@ class TestDataGateway(TestCase):
         empty = json.loads(should_be_empty_json_list)
         self.assertEqual(0, len(empty))
         self.assertEqual(list, type(empty))
+
 
     def test_bad_halt_ids_excluded_geo_loc(self):
         locs = dg.get_geo_locs()
@@ -50,13 +51,26 @@ class TestDataGateway(TestCase):
         res = set(lines)
         self.assertEqual(known_lines, res)
 
+    def test_get_leg_counts_should_exclude_baddies(self):
+        route = dg.get_leg_counts(linie=2)
+        #Seems that #2 includes tramstop 2251 in its route
+
+        legs = route.jounery_legs
+        halt_0 = set((leg.halt_id_0 for leg in legs))
+        halt_1 = set((leg.halt_id_1 for leg in legs))
+        all_stops = halt_0.union(halt_1)
+
+
+        self.assertFalse(2251 in all_stops)
+
+
     def test_get_route_items(self):
         #get the route for line number 3...
         route_3_stops = dg.get_route_items(3)
         #might be worth adding a some more fakes to the test data rather than
         #having this mess...
         expected = {1541, 1938, 2582, 1305, 2713, 1306, 2870, 2871, 2248, 2250,
-                    2251, 2640, 2641, 2262, 1502, 2256, 1905, 1906, 2810, 1531,
+                    2640, 2641, 2262, 1502, 2256, 1905, 1906, 2810, 1531,
                     1406, 1535}
         self.assertEqual(expected, route_3_stops)
 
@@ -69,6 +83,7 @@ class TestDataGateway(TestCase):
         route = search_route_by(2613, 2536)
         stop_ids = {x[0] for x in route.extract_path()}
         self.assertEqual({2613, 2536}, stop_ids)
+
 
     def test_get_leg_counts(self):
         #Structure - expected = {'halt_id_0' : 0, 'halt_id_1' : 1, 'frequncy' : 1}
@@ -102,5 +117,11 @@ class TestDataGateway(TestCase):
         my_locs = {loc.halt_id : loc for loc in locs}
         self.assertEqual(13469, my_locs[143].halt_punkt_id)
 
+    def test_nearest_stop(self):
+        """Given a lat and long, return the nearest stop"""
+        from scipy.spatial import distance
+        #halt_id = dg.nearest_stop(180.0,0.0)
+        halt_id = dg.nearest_stop(47.3928,8.6206)
+        self.assertEqual(2027, halt_id)
 if __name__ == '__main__':
     main(exit=False)

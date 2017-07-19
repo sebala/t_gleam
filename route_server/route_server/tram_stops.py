@@ -1,12 +1,31 @@
 import pandas as pd
 import numpy as np
 from route_server import Puzzle
+import scipy.spatial
 from .messages import GeoPath, GeoPosition, to_json_message
 def parseFloat(s):
     if type(s)==str:
         return float(s.replace(',','.'))
     if type(s)==float:
         return s
+
+from numba import jit
+
+@jit
+def v_haversine(origin, destination):
+    """TODO Add the notebook to explain this... jit'd
+    For this use case, this is excessive... maybe take it out"""
+    lat1, lon1 = origin
+    lat2, lon2 = destination
+    radius = 6371 # km
+
+    dlat = math.radians(lat2-lat1)
+    dlon = math.radians(lon2-lon1)
+    a = math.sin(dlat/2) * math.sin(dlat/2) + math.cos(math.radians(lat1)) \
+        * math.cos(math.radians(lat2)) * math.sin(dlon/2) * math.sin(dlon/2)
+    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
+    d = radius * c
+    return d
 
 #TODO Not sure if it should return json strings, or real python objects; lists et c.
 #At the moment, this is a mix of both; deciding on a serialization strategy
@@ -24,7 +43,7 @@ class DataGateway:
 
         df = self.df
         von_excludes = df['halt_id_von'].isin(baddies)
-        nach_excludes = df['halt_id_von'].isin(baddies)
+        nach_excludes = df['halt_id_nach'].isin(baddies)
         self.df = df[~(von_excludes|nach_excludes)]
 
         hp = self.halte_punkt
@@ -54,6 +73,7 @@ class DataGateway:
             haltepunkt_path = './data/haltepunkt.csv',
             soll_ist_path = './data/fahrzeitensollist2017010120170107.csv',
             bad_halt_ids = (2300, 3010, 2514, 1736, 3102, 2023, 2251, 2299, 2081, 2144, 2301)
+
         ):
         self.soll_ist_stops = pd.read_csv(haltestelle_path)
         self.halte_punkt = pd.read_csv(haltepunkt_path)
@@ -88,14 +108,21 @@ class DataGateway:
         Result will be a list of json with the structure:
         [{'halt_id_0' : int, 'halt_id_1' : int, 'frequency' : int}]"""
         tmp = self.df[self.df['linie']==linie]
-        frequencies = tmp.groupby(['halt_id_0','halt_id_1']).size().reset_index(name='frequency')
-        #return frequencies.to_json(orient='records')
+        #frequencies = tmp.groupby(['halt_id_0','halt_id_1']).size().reset_index(name='frequency')
+        frequencies = tmp.groupby(['halt_id_0','halt_id_1']).agg(
+            [
+                np.size,
+                np.mean,
+                np.var]
+            ).reset_index()
         from .messages import JourneyLeg, JourneyInfo
         def to_JourneyLeg(row):
             return JourneyLeg(
                 int(row[0]),
                 int(row[1]),
-                decorations={'frequency' : int(row[2])}
+                decorations={
+                    'frequency' : int(row[2]),
+                    'mean' : float(row[3])}
             )
 
         legs = list(map(to_JourneyLeg, frequencies.values))
@@ -127,6 +154,16 @@ class DataGateway:
         res = hp[hp['halt_id']==halt_id]
         return res[['halt_id','GPS_Latitude', 'GPS_Longitude']][:1].to_json(orient='records')
 
+    def nearest_stop(self, lat, lng):
+        """Return the nearest stop given the lng, lat"""
+        location = np.array([[lat,lng]], np.float64)
+        lat_lng_slice = self.halte_punkt[['GPS_Latitude', 'GPS_Longitude']]
+        distances = scipy.spatial.distance.cdist(location,lat_lng_slice)
+        closest = distances.argmin(axis=1)
+        #47.3928,8.6206
+        #In any reasonable data, we should always find a value, so don't checkout
+        #bounds et c.
+        return self.halte_punkt.iloc[closest]['halt_id'].values[0]
 
     def create_searcher(self):
         df = self.df
@@ -177,7 +214,8 @@ def configure():
             get_geo_loc, \
             search_route_by, \
             get_leg_counts, \
-            gateway.get_geo_locs
+            gateway.get_geo_locs, \
+            gateway.nearest_stop
 
 
 """
