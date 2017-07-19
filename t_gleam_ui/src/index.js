@@ -5,11 +5,10 @@ import { createStore } from 'redux'
 import { Provider } from 'react-redux'
 import App from './Components/App'
 import * as ActionTypes from './actions/actions'
-
 const initial_state = {
   start_halte_id: -1,
   shouldShowGlobalMarkers : false,
-  currentView: 'ROUTE_FINDER',
+  currentView: '',
   lat: 47.376848,
   lng: 8.540508,
   trams: [],
@@ -23,6 +22,16 @@ const initial_state = {
       }
     },
     'LINE_VIEW' : {
+      route : {
+        jounery_legs: []
+      }
+    },
+    'landing_screen' : {
+      route : {
+        jounery_legs: []
+      }
+    },
+    'EXPERIMENTAL' : {
       route : {
         jounery_legs: []
       }
@@ -74,6 +83,16 @@ const reducer = (state, action) => {
         ...state,
         tramstop_geo_locs : action.tramstop_geo_locs
       }
+    }else if(action.type ===ActionTypes.NEAREST_STOP_LOADED){
+
+      return {
+        ...state,
+        endTram :action.end_halt_id,
+        pickEndTram:state.tramstops[action.end_halt_id],
+
+        pickStartTram: state.tramstops[action.halt_id],
+        currentView: action.screen
+      }
     }
 
 
@@ -87,6 +106,7 @@ const store = createStore(reducer, initial_state);
 
 ActionTypes.load_tramstops(store.dispatch)
 ActionTypes.load_geo_for_all_stops(store.dispatch)
+ActionTypes.load_nearest_stop(store.dispatch)
 class RenderApp extends React.Component {
   render () {
     return (

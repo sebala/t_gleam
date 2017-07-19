@@ -2,38 +2,32 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { switchView } from '../actions/actions'
 const Layout = ({ main, navbar, debug }) => (
-    <div className="container-fluid">
-        <div className="row">
-            <div className="col-xs navbar">
-                { navbar }
-            </div>
-        </div>
-        <div className="row container_moin"/>
-        <div className="row content ">
-            <div className="col-xs main">
-                { main }
-            </div>
-            { debug }
-        </div>
-    </div>
+  <div>
+          <div className="main nav">
+                  { navbar }
+          </div>
+          <div className="main container">
+
+                  { main }
+          </div>
+          <div className="main footer">
+            <div className="ui divider"></div>
+              { debug }
+              <p>Info</p>
+          </div>
+      </div>
 )
 
 const Navbar = ({dispatch}) => {
 
     const to_line_view = () => {switchView(dispatch, 'LINE_VIEW')};
     const to_main_view = () => {switchView(dispatch, 'ROUTE_FINDER')}
-
-    return <div className="navbar navbar-fixed-top bg-inverse navbar-dark">
-        <a className="navbar-brand" href="#">gleam</a>
-        <ul className="nav navbar-nav">
-            <li className="nav-item">
-              <a className="nav-link" href="#" onClick={to_main_view}>Home</a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link" href="#" onClick={to_line_view}>Away</a>
-            </li>
-        </ul>
-    </div>
+    const to_experiments = () => {switchView(dispatch, 'EXPERIMENTAL')}
+    return <div className="ui three item menu">
+  <a className="item" onClick={to_main_view}>Home</a>
+  <a className="item" onClick={to_line_view}>Away</a>
+  <a className="item" onClick={to_experiments}>Experiments</a>
+</div>
 }
 
 module.exports = {

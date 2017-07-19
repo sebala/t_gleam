@@ -1,30 +1,29 @@
 import React from 'react';
-import Select from 'react-select';
+import {  Dropdown} from 'semantic-ui-react'
 import { connect } from 'react-redux'
 import { find_route, tramstopSelected, endstopSelected} from '../actions/actions'
-
 class TramStopPicker extends React.Component {
 
 	//TODO tests???
 
-	fromUpdateValue(evt){
+	fromUpdateValue(evt, data){
 		const { dispatch, tramstops,endTram} = this.props;
-		tramstopSelected(dispatch,tramstops[evt]);
+		tramstopSelected(dispatch,tramstops[data.value]);
 
 		if(typeof endTram!=='undefined'){
-			const from_halt_id = tramstops[evt].halt_id;;
+			const from_halt_id = tramstops[data.value].halt_id;;
 			const  to_halt_id = endTram.halt_id;
 			find_route(dispatch, from_halt_id, to_halt_id);
 		}
 	}
 
-	toUpdateValue(evt){
+	toUpdateValue(evt, data){
 		const { dispatch, tramstops, startTram } = this.props;
-		endstopSelected(dispatch,tramstops[evt]);
+		endstopSelected(dispatch,tramstops[data.value]);
 
 		if(typeof startTram!=='undefined'){
 			const from_halt_id = startTram.halt_id;
-			const  to_halt_id = tramstops[evt]['halt_id'];
+			const  to_halt_id = tramstops[data.value]['halt_id'];
 			find_route(dispatch, from_halt_id, to_halt_id);
 		}
 	}
@@ -37,15 +36,16 @@ class TramStopPicker extends React.Component {
 				if (tramstops.hasOwnProperty(key)) {
 					let option = {};
 
-					option['label'] = tramstops[key].halt_lang;
+					//option['label'] = tramstops[key].halt_lang;
+					option['text'] = tramstops[key].halt_lang;
 					option['value'] = tramstops[key].halt_id;
 					options_list.push(option);
 				}
 			}
 
 		 	options_list.sort( function( a, b ) {
-		 			a = a.label.toLowerCase();
-		 			b = b.label.toLowerCase();
+		 			a = a.text.toLowerCase();
+		 			b = b.text.toLowerCase();
 		 			return a < b ? -1 : a > b ? 1 : 0;
 		 	});
 
@@ -58,34 +58,36 @@ class TramStopPicker extends React.Component {
 			if(typeof endTram!=='undefined'){
 				end_selection = endTram.halt_id;
 			}
+			let s1 = 				<Dropdown
+								onChange={this.fromUpdateValue.bind(this)}
+								value={start_selection}
+ 								 options={options_list}
+									 selection
+									 search
+									 />
+			const s2 = 		<Dropdown
+													 onChange={this.toUpdateValue.bind(this)}
+													 value={end_selection}
+															options={options_list}
+															selection
+															/>
+
+			//s1 =<NakedApp/>
 			return (
-					<div className="container_moin">
-						<div className="container_moin"/>
-						<div className="row">
-							<div>
-									<Select ref="stateSelect"
-											autofocus options={options_list}
-											simpleValue
-											label="From"
-											 value={start_selection}
-											 onChange={val =>this.fromUpdateValue(val)}
-											 />
-							</div>
-						</div>
-						<div className="row">
+				<div className='ui grid container'>
+					<div className='row'>
 
-							<div>
-									<Select ref="stateSelect"
-											autofocus options={options_list}
-											simpleValue
-											label="From"
-											 value={end_selection}
-											 onChange={val =>this.toUpdateValue(val)}
-											 />
-									</div>
+						<div className='five wide column'>
+							{s1}
 						</div>
-
 					</div>
+					<div className='row'>
+						<div className='three wide column'>
+							{s2}
+						</div>
+					</div>
+				</div>
+
 		);
 	}
 }
