@@ -1,7 +1,6 @@
 import pandas as pd
 import numpy as np
 from route_server import Puzzle
-import scipy.spatial
 from .messages import GeoPath, GeoPosition, to_json_message
 def parseFloat(s):
     if type(s)==str:
@@ -9,23 +8,6 @@ def parseFloat(s):
     if type(s)==float:
         return s
 
-from numba import jit
-
-@jit
-def v_haversine(origin, destination):
-    """TODO Add the notebook to explain this... jit'd
-    For this use case, this is excessive... maybe take it out"""
-    lat1, lon1 = origin
-    lat2, lon2 = destination
-    radius = 6371 # km
-
-    dlat = math.radians(lat2-lat1)
-    dlon = math.radians(lon2-lon1)
-    a = math.sin(dlat/2) * math.sin(dlat/2) + math.cos(math.radians(lat1)) \
-        * math.cos(math.radians(lat2)) * math.sin(dlon/2) * math.sin(dlon/2)
-    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
-    d = radius * c
-    return d
 
 #TODO Not sure if it should return json strings, or real python objects; lists et c.
 #At the moment, this is a mix of both; deciding on a serialization strategy
@@ -154,17 +136,6 @@ class DataGateway:
         res = hp[hp['halt_id']==halt_id]
         return res[['halt_id','GPS_Latitude', 'GPS_Longitude']][:1].to_json(orient='records')
 
-    def nearest_stop(self, lat, lng):
-        """Return the nearest stop given the lng, lat"""
-        location = np.array([[lat,lng]], np.float64)
-        lat_lng_slice = self.halte_punkt[['GPS_Latitude', 'GPS_Longitude']]
-        distances = scipy.spatial.distance.cdist(location,lat_lng_slice)
-        closest = distances.argmin(axis=1)
-        #47.3928,8.6206
-        #In any reasonable data, we should always find a value, so don't checkout
-        #bounds et c.
-        return self.halte_punkt.iloc[closest]['halt_id'].values[0]
-
     def create_searcher(self):
         df = self.df
         df['journey_time'] =df['ist_an_nach1']-df['ist_an_von']
@@ -214,8 +185,7 @@ def configure():
             get_geo_loc, \
             search_route_by, \
             get_leg_counts, \
-            gateway.get_geo_locs, \
-            gateway.nearest_stop
+            gateway.get_geo_locs
 
 
 """

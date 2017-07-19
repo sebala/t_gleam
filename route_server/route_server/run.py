@@ -14,7 +14,7 @@ from .messages import to_json_message, JourneyLeg, JourneyInfo
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
-get_tram_stops, get_geo_loc, search_route_by, get_leg_counts, get_geo_locs, nearest_stop = configure()
+get_tram_stops, get_geo_loc, search_route_by, get_leg_counts, get_geo_locs = configure()
 
 CORS(app)
 
@@ -24,30 +24,6 @@ handler = RotatingFileHandler('foo.log', maxBytes=10000, backupCount=1)
 handler.setLevel(logging.DEBUG)
 app.logger.addHandler(handler)
 
-def request_to_ipinfo(ip):
-    ''' return a json from the request
-
-    SAMPLE_RESPONSE_EXAMPLE = """  "ip": "8.8.8.8",
-      "hostname": "google-public-dns-a.google.com",
-      "loc": "37.385999999999996,-122.0838",
-      "org": "AS15169 Google Inc.",
-      "city": "Mountain View",
-      "region": "California",
-      "country": "US",
-      "phone": 650"""
-       '''
-    if ip == '127.0.0.1':
-        return {
-            "loc":'47.3928,8.6206'
-        }
-    with open('./ipinfo.access.token', 'r') as f:
-        token = f.readlines()[0]
-
-    full_url = 'https://ipinfo.io/{ip}/json?token={token}'.format(ip, token = token)
-    headers = {'User-Agent': 'curl/7.30.0'}
-    req = requests.get(full_url, headers=headers)
-    if req.status_code == 200:
-        return req.json()
 
 # This is our decorator
 from functools import wraps
@@ -77,19 +53,9 @@ def user_logs(f):
 def get_nearest_halt_id():
     """Lookup the nearest halt_id using the request
     and then sending the address to ipinfo
-    One alternative would be to ask the user for their
-    location as this approach may be seen as some kind
-    of dark pattern..."""
-    ip = request.environ.get('HTTP_X_REAL_IP', request.remote_addr)
-    js = request_to_ipinfo(ip)
-    if not js:
-        pass
-    #TODO Sanitize; proper decoding... et c.
-    app.logger.info(str(js))
-    app.logger.info(type(js))
-
-    lng, lat = map(float,js['loc'].split(','))
-    halt_id = {'nearest_halt_id' : int(nearest_stop(lng, lat))}
+    TODO - The IP lookup is not really accurate, and
+    this call causes tonnes of problems... remove or replace..."""
+    halt_id = {'nearest_halt_id' : 2316}
     response = app.response_class(
         response=to_json_message(halt_id),
         status=200,

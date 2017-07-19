@@ -117,11 +117,5 @@ class TestDataGateway(TestCase):
         my_locs = {loc.halt_id : loc for loc in locs}
         self.assertEqual(13469, my_locs[143].halt_punkt_id)
 
-    def test_nearest_stop(self):
-        """Given a lat and long, return the nearest stop"""
-        from scipy.spatial import distance
-        #halt_id = dg.nearest_stop(180.0,0.0)
-        halt_id = dg.nearest_stop(47.3928,8.6206)
-        self.assertEqual(2027, halt_id)
 if __name__ == '__main__':
     main(exit=False)
