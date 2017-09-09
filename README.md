@@ -8,7 +8,7 @@ Assuming you have python3 and npm installed, and the repository is cloned
 ```
 virtualenv -p python3 my_virtual_env  
 source my_virtual_env/bin/activate
-cd route_server
+cd t_gleam/route_server
 pip install -r requirements.txt
 Getting the data?
 ```

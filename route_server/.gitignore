@@ -7,3 +7,6 @@ hints.txt
 *.xls*
 *.csv*
 *.log*
+venv
+test_virgin
+my_virtual_env

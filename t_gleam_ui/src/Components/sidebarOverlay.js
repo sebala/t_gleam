@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Sidebar, Segment, Button, Menu, Image, Icon, Header } from 'semantic-ui-react'
+import { Sidebar, Segment, Button} from 'semantic-ui-react'
 import MyMap from './MyMap'
 import JourneyFilter from './journeyFilters'
 import TramStopPicker from './TramStopPicker'
