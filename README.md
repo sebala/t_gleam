@@ -1,6 +1,6 @@
 ## Getting Started
 
-Assuming you have python3 and npm installed, and the repository is cloned
+Assuming you have python3, virtualenv, and npm installed...
 
 #### Python Server Set up
 (from the base directory of the cloned repository)
