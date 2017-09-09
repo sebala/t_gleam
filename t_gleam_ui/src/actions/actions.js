@@ -1,5 +1,5 @@
-const BASE_URL = 'http://localhost:5000'
-//const BASE_URL = 'https://www.gleam.ch/someurl'
+//const BASE_URL = 'http://localhost:5000'
+const BASE_URL = 'https://www.gleam.ch/someurl'
 function standard_json_handler(response){
 	if (!response.ok) {
 
