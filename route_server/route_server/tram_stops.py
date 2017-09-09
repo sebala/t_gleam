@@ -131,7 +131,6 @@ class DataGateway:
         return hp[cond2].apply(to_GeoPosition, axis=1).tolist()
 
     def get_geo_loc(self, halt_id):
-        #TODO Remove this; clients should cache the results
         hp = self.halte_punkt
         res = hp[hp['halt_id']==halt_id]
         return res[['halt_id','GPS_Latitude', 'GPS_Longitude']][:1].to_json(orient='records')
@@ -186,25 +185,3 @@ def configure():
             search_route_by, \
             get_leg_counts, \
             gateway.get_geo_locs
-
-
-"""
-Tram colors
-https://en.wikipedia.org/wiki/Trams_in_Z%C3%BCrich
-
-
-{'13':'#FBD01F',
-'12': '#7ACAD4',
-'11': '#009F4A',
-'10': '#DA3987',
-'15': '#D8232A',
-'14': '#00A4DB',
-'17': '#8E224D',
-'3': '#009F4A',
- '2': '#D8232A',
- '5': '#855B37',
- '4': '#3E4085',
- '7': '#191919',
- '6': '#DA9F4F',
- '9': '#3E4085'}
- """

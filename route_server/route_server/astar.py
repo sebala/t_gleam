@@ -55,6 +55,10 @@ def build_verticies_with_estimates(list_of_tuples):
         result[to_node].append(to_action)
     return result
 
+#Use a counter to give each Path a id which is used for total_ordering
+#This is needed by for the heapq; although *we* only care about ordering the path_cost
+#see https://docs.python.org/3/library/heapq.html 8.5.2
+#There's probably a cleaner way to do this, but it's there for now
 import itertools
 c = itertools.count()
 
@@ -180,7 +184,7 @@ class PathPriorityQueue(object):
 
 class Puzzle(object):
     """
-    Implements A* algorithm
+    Implements a breadth first search algorithm
     """
     def __init__(self, ACTIONS):
         self.ACTIONS = ACTIONS
@@ -211,9 +215,7 @@ class Puzzle(object):
             path = frontier.pop()
             node = path.end
             explored.add(node)
-            print('Adding node:' + str(node))
             if node == goal:
-                #print(nodes_considered)
                 return path
             for action in self.ACTIONS(path):
                 print(str(action))

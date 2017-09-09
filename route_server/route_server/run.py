@@ -7,10 +7,8 @@ from flask import make_response, request, current_app
 from functools import update_wrapper
 from flask_cors import CORS, cross_origin
 from  .tram_stops import configure
-#from  .preloaded import get_tram_stops, get_geo_loc, search_route_by
 import uuid
 from .messages import to_json_message, JourneyLeg, JourneyInfo
-
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
@@ -24,32 +22,7 @@ handler = RotatingFileHandler('foo.log', maxBytes=10000, backupCount=1)
 handler.setLevel(logging.DEBUG)
 app.logger.addHandler(handler)
 
-
-# This is our decorator
-from functools import wraps
-def user_logs(f):
-    # This is the new function we're going to return
-    # This function will be used in place of our original definition
-    @wraps(f)
-    def wrapper(*args,**kwargs):
-        #https://stackoverflow.com/questions/3759981/get-ip-address-of-visitors-using-python-flask
-        #https://httpd.apache.org/docs/2.4/mod/mod_proxy.html#x-headers
-        ip = request.environ.get('HTTP_X_REAL_IP', request.remote_addr)
-        app.logger.info('IP::' + str(ip))
-        new_user = False
-        if 'user_id' not in request.cookies:
-            new_user = True
-        app.logger.info('Entering')
-        res = f(*args, **kwargs)
-        app.logger.info("Exited Function")
-        if new_user:
-            res.set_cookie('user_id', str(uuid.uuid4()))
-        return res
-    return wrapper
-
-
 @app.route('/nearest_stop')
-@user_logs
 def get_nearest_halt_id():
     """Lookup the nearest halt_id using the request
     and then sending the address to ipinfo
