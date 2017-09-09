@@ -64,7 +64,7 @@ const MyMap = ({route, showMarkers, lat, lng, zoom, tramstop_geo_locs}) => {
 //'http://{s}.tile.osm.org/{z}/{x}/{y}.png'
     //bounds={bounds}-->
     return (
-      <Map center={position} zoom={zoom}>
+      <Map center={position} zoom={zoom} zoomControl={false}>
         <TileLayer
           attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           url='http://{s}.tile.osm.org/{z}/{x}/{y}.png'

@@ -6,7 +6,7 @@ import TramStopPicker from './TramStopPicker'
 import TramList from './tramList'
 import ShowMarkersToggle from './ShowMarkersToggle'
 class SidebarLeftOverlay extends Component {
-  state = { visible: false,
+  state = { visible: true,
           viewport : 'default'}
 
   toggleVisibility = () => this.setState({ visible: !this.state.visible })
@@ -29,18 +29,21 @@ class SidebarLeftOverlay extends Component {
     }else if (viewport==='show_markers'){
       overlay = <ShowMarkersToggle/>;
     }
+    overlay = <TramStopPicker/>;
+    //
+    //<Button onClick={() => this.setView('stops')}>By Stop</Button>
+    //<Button onClick={() => this.setView('default')}>Filters</Button>
 
     const { visible } = this.state
     return (
       <div>
-      <Button onClick={this.toggleVisibility}>On</Button>
-      <Button onClick={() => this.setView('stops')}>By Stop</Button>
-      <Button onClick={() => this.setView('default')}>Filters</Button>
-      <Button onClick={() => this.setView('routelist')}>By Line</Button>
-      <Button onClick={() => this.setView('show_markers')}>Show markers</Button>
+      <Button onClick={this.toggleVisibility}>Stops</Button>
+      <ShowMarkersToggle/>
 
         <Sidebar.Pushable as={Segment}>
+
           <Sidebar animation='overlay' width='wide' visible={visible} icon='labeled'>
+
               {overlay}
 
           </Sidebar>
