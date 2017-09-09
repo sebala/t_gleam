@@ -42,40 +42,4 @@ class JourneyFilter extends React.Component {
   }
 }
 
-/**
-<div>
-            <div className="ui form">
-
-              <div className="fields">
-                  <div className="field">
-                      <label htmlFor='cf'>Min journeys</label>
-                      <div className="ui search">
-                        <div className="ui icon input">
-                          <input id='cf' type="number" placeholder="Min journeys" min='1'/>
-                        </div>
-                      </div>
-                  </div>
-              </div>
-              <div className="divider"/>
-              <div className="fields">
-                  <div className="field">
-                      <label htmlFor='route'>Route</label>
-                      <div className="ui search">
-                        <select className="ui fluid search dropdown" multiple="">
-                            <option value="Mo">Moon</option>
-                            <option value="Tu">Tuesday</option>
-                            <option value="We">Wodnesday</option>
-                            <option value="Th">Thorsday</option>
-                            <option value="Fr">Freeday</option>
-                            <option value="St">Saturnsday</option>
-                            <option value="Su">Sunsdays</option>
-                        </select>
-                      </div>
-                  </div>
-              </div>
-
-
-          </div>
-        </div>
-    */
 export default JourneyFilter;

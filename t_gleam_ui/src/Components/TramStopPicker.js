@@ -55,33 +55,26 @@ class TramStopPicker extends React.Component {
 			if(typeof endTram!=='undefined'){
 				end_selection = endTram.halt_id;
 			}
-			let s1 = 	<Dropdown
+			let s1 = <Dropdown
 								onChange={this.fromUpdateValue.bind(this)}
 								value={start_selection}
  								 options={options_list}
 									 selection
-									 search
-									 />
+									 search/>
 			const s2 = 		<Dropdown
 													 onChange={this.toUpdateValue.bind(this)}
 													 value={end_selection}
 															options={options_list}
 															selection
+															search
 															/>
-
-			//s1 =<NakedApp/>
 			return (
 				<div className='ui grid container'>
 					<div className='row'>
-
-						<div className='five wide column'>
 							{s1}
-						</div>
 					</div>
 					<div className='row'>
-						<div className='five wide column'>
 							{s2}
-						</div>
 					</div>
 				</div>
 

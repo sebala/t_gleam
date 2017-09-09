@@ -6,8 +6,8 @@ const RouteList = ({ start_halte_id, end_halte_id, route}) => {
 
   if (route.length>0){
     ul = <ul>
-                {route.map(x=><li key={x.halt_id}>{x.halt_id}</li>)}
-              </ul>
+            {route.map(x=><li key={x.halt_id}>{x.halt_id}</li>)}
+          </ul>
   }
   return <div>
     <p>{start_halte_id}</p>
@@ -37,7 +37,4 @@ const mapStateToProps = state => {
   return prototype;
 }
 
-///export default TramStopPicker;
 export default connect(mapStateToProps)(RouteList)
-
-//export default RouteList;

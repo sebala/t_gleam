@@ -1,5 +1,8 @@
 //const BASE_URL = 'http://localhost:5000'
-const BASE_URL = 'https://www.gleam.ch/someurl'
+import {BASE_URL} from '../config'
+
+console.log('Environment' + BASE_URL)
+//const BASE_URL = 'https://www.gleam.ch/someurl'
 function standard_json_handler(response){
 	if (!response.ok) {
 
@@ -17,9 +20,6 @@ function switchView(dispatch, new_view){
 }
 
 export const SHOW_GLOBAL_MAP_MARKERS = 'SHOW_GLOBAL_MAP_MARKERS'
-//const switchGlobalMapMarkers = value => (dispatch, value) => {
-//function switchGlobalMapMarkers(dispatch, show){
-//export const checkout = products => (dispatch, getState) => {
 function switchGlobalMapMarkers(dispatch, new_value){
 	dispatch(
 		{
@@ -46,13 +46,6 @@ function find_route(dispatch, start_halte_id, end_halte_id){
 
 
 function loadStop(halte_id, on_found){
-	/*const rest_url = 'http://localhost:5000/geo_loc/'+ halte_id;
-	fetch(rest_url)
-		.then(standard_json_handler)
-		.then((responseData) => {
-			on_found(responseData[0]);
-		});
-	*/
 	const rest_url = BASE_URL + '/foo/get_loc';
 	let body = JSON.stringify({ 'halt_id': halte_id});
 
@@ -61,7 +54,6 @@ function loadStop(halte_id, on_found){
 		headers: {
 		    'Accept': 'application/json',
 		    'Content-Type': 'application/json',
-				//'Content-Type': 'text/plain',
 		  },
 			'body': body
 		})
