@@ -16,7 +16,8 @@ const App = ({view, dispatch}) => {
     //main = <div className='animated fadeIn'><RouteFinderView/></div>
     main = <RouteFinderView/>
   }else if (view==='LINE_VIEW') {
-    main =  <div>						<p>Some hidden shim</p>
+    main =  <div>
+              
               <div  className="container_moin">
                 <div className='row'>
                     <div className="col-md-2">

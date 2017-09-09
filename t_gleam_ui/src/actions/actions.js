@@ -3,7 +3,7 @@ const BASE_URL = 'https://www.gleam.ch/someurl'
 function standard_json_handler(response){
 	if (!response.ok) {
 
-		throw Error('Something went wrong retreiving currency information :(');
+		throw Error('Something went wrong retreiving information :(');
 	}
 	return response.json();
 };

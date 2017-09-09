@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import {Button} from 'semantic-ui-react'
 import { loadTramLineStats } from '../actions/actions'
+import ShowMarkersToggle from './ShowMarkersToggle'
 const Tramlist = ({ dispatch, trams }) => {
   const call_load_stats = (linie) => {
     loadTramLineStats(dispatch, linie);
@@ -48,7 +49,12 @@ const Tramlist = ({ dispatch, trams }) => {
       //        </div>
   });
   return <div>
+    <div>
+      <ShowMarkersToggle/>
+    </div>
+    <div>
     {list_items}
+    </div>
     </div>
 }
 

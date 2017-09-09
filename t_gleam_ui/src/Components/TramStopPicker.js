@@ -58,7 +58,7 @@ class TramStopPicker extends React.Component {
 			if(typeof endTram!=='undefined'){
 				end_selection = endTram.halt_id;
 			}
-			let s1 = 				<Dropdown
+			let s1 = 	<Dropdown
 								onChange={this.fromUpdateValue.bind(this)}
 								value={start_selection}
  								 options={options_list}
