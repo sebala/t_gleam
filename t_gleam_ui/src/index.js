@@ -5,10 +5,11 @@ import { createStore } from 'redux'
 import { Provider } from 'react-redux'
 import App from './Components/App'
 import * as ActionTypes from './actions/actions'
+import * as reducer from './reducers/reducer'
 const initial_state = {
   start_halte_id: -1,
   shouldShowGlobalMarkers : false,
-  currentView: 'EXPERIMENTAL',
+  currentView: '',
   lat: 47.376848,
   lng: 8.540508,
   trams: [],
@@ -26,11 +27,6 @@ const initial_state = {
         jounery_legs: []
       }
     },
-    'landing_screen' : {
-      route : {
-        jounery_legs: []
-      }
-    },
     'EXPERIMENTAL' : {
       route : {
         jounery_legs: []
@@ -39,70 +35,7 @@ const initial_state = {
   }
 }
 
-
-const reducer = (state, action) => {
-  if (action.type===ActionTypes.SELECT_START) {
-    return {
-        ...state,
-        startTram :action.startTram,
-        pickStartTram: action.pickStartTram
-      }
-
-  }else if (action.type===ActionTypes.SELECT_END) {
-    return {
-        ...state,
-        endTram :action.endTram,
-        pickEndTram:action.pickEndTram
-      }
-  }else if (action.type===ActionTypes.ROUTE_LOADED) {
-    //state.screenStates[state.currentView].route = action.route
-    let new_state = {
-        ...state
-      }
-      new_state.screenStates[new_state.currentView].route = action.route
-      return new_state
-    }
-  else if (action.type===ActionTypes.SHOW_GLOBAL_MAP_MARKERS){
-    return {
-      ...state,
-      shouldShowGlobalMarkers : action.show_markers
-    }
-  }  else if (action.type===ActionTypes.SWITCH_VIEW){
-      return {
-        ...state,
-        currentView : action.newView
-      }
-    }
-    else if (action.type===ActionTypes.ALL_STOPS_AVAILABLE){
-      return {
-        ...state,
-        tramstops : action.tramstops
-      }
-    }else if (action.type===ActionTypes.ALL_GEOS_AVAILABLE){
-      return {
-        ...state,
-        tramstop_geo_locs : action.tramstop_geo_locs
-      }
-    }else if(action.type ===ActionTypes.NEAREST_STOP_LOADED){
-
-      return {
-        ...state,
-        endTram :action.end_halt_id,
-        pickEndTram:state.tramstops[action.end_halt_id],
-
-        pickStartTram: state.tramstops[action.halt_id],
-        currentView: action.screen
-      }
-    }
-
-
-
-  else{
-    return state
-  }
-}
-
-const store = createStore(reducer, initial_state);
+const store = createStore(reducer.reducer, initial_state);
 
 ActionTypes.load_tramstops(store.dispatch)
 ActionTypes.load_geo_for_all_stops(store.dispatch)

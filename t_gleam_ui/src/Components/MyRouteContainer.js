@@ -104,7 +104,6 @@ function mapStateToProps(state){
   }
 }
 
-
 getMarkers.propTypes = {
   route: PropTypes.array
 }

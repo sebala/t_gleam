@@ -1,8 +1,6 @@
-//const BASE_URL = 'http://localhost:5000'
 import {BASE_URL} from '../config'
 
 console.log('Environment' + BASE_URL)
-//const BASE_URL = 'https://www.gleam.ch/someurl'
 function standard_json_handler(response){
 	if (!response.ok) {
 
@@ -153,20 +151,6 @@ function load_geo_for_all_stops(dispatch){
 		});
 }
 
-export const NEAREST_STOP_LOADED = 'NEAREST_STOP_LOADED';
-export function load_nearest_stop(dispatch){
-	fetch(BASE_URL+'/nearest_stop').then(standard_json_handler)
-		.then((nearest_stop) => {
-				const nearest_halt_id = nearest_stop['nearest_halt_id'];
-				const zurich_hb = 1541;
-				dispatch({
-					type: NEAREST_STOP_LOADED,
-					halt_id: nearest_halt_id,
-					end_halt_id: zurich_hb,
-					screen: 'landing_screen'
-				});
-		});
-	}
 
 export { load_tramstops, standard_json_handler, find_route, switchGlobalMapMarkers,
 	switchView, tramstopSelected, endstopSelected, loadTramLineStats,

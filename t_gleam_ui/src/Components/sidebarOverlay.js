@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { Sidebar, Segment, Button} from 'semantic-ui-react'
 import MyMap from './MyMap'
-import JourneyFilter from './journeyFilters'
 import TramStopPicker from './TramStopPicker'
 import TramList from './tramList'
 import ShowMarkersToggle from './ShowMarkersToggle'
@@ -20,9 +19,7 @@ class SidebarLeftOverlay extends Component {
     let {viewport} = this.state;
     let overlay = '';
 
-    if (viewport==='default'){
-        overlay = <JourneyFilter/>;
-    }else if (viewport==='stops'){
+    if (viewport==='stops'){
       overlay = <TramStopPicker/>;
     }else if (viewport==='routelist'){
       overlay = <TramList/>;
@@ -37,15 +34,11 @@ class SidebarLeftOverlay extends Component {
     const { visible } = this.state
     return (
       <div>
-      <Button onClick={this.toggleVisibility}>Stops</Button>
-      <ShowMarkersToggle/>
-
+        <Button onClick={this.toggleVisibility}>Stops</Button>
+        <ShowMarkersToggle/>
         <Sidebar.Pushable as={Segment}>
-
           <Sidebar animation='overlay' width='wide' visible={visible} icon='labeled'>
-
               {overlay}
-
           </Sidebar>
           <Sidebar.Pusher>
             <Segment basic>

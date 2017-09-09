@@ -7,7 +7,6 @@ const Layout = ({ main, navbar, debug }) => (
                   { navbar }
           </div>
           <div className="main container">
-
                   { main }
           </div>
           <div className="main footer">

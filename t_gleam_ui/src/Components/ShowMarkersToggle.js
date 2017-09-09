@@ -8,7 +8,6 @@ const ShowMarkersToggle = ({showMarkers, dispatch}) => {
     const localClick = () => switchGlobalMapMarkers(dispatch, !showMarkers);
     return (
       <Button onClick={() =>  localClick()}>Markers</Button>
-
   )
 }
 

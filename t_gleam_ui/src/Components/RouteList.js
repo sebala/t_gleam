@@ -16,8 +16,6 @@ const RouteList = ({ start_halte_id, end_halte_id, route}) => {
   </div>
 }
 
-
-
 const mapStateToProps = state => {
   const prototype = {
     'start_halte_id': -1,

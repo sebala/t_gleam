@@ -59,12 +59,14 @@ class TramStopPicker extends React.Component {
 								onChange={this.fromUpdateValue.bind(this)}
 								value={start_selection}
  								 options={options_list}
+								 minCharacters={0}
 									 selection
 									 search/>
 			const s2 = 		<Dropdown
 													 onChange={this.toUpdateValue.bind(this)}
 													 value={end_selection}
 															options={options_list}
+															minCharacters={0}
 															selection
 															search
 															/>

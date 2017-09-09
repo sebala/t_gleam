@@ -3,7 +3,6 @@ import TramStopPicker from './TramStopPicker'
 import ShowMarkersToggleContainer from './ShowMarkersToggle';
 import RouteList from './RouteList'
 import MyMap from './MyMap'
-import JourneyFilter from './journeyFilters'
 import {Sidebar} from 'semantic-ui-react'
 const RouteFinderView = () => (
   <div>

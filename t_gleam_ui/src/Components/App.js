@@ -4,7 +4,6 @@ import MyMap from './MyMap'
 import {Navbar, Layout} from './navBar'
 import TramList from './tramList';
 import TramStopPicker from './TramStopPicker';
-import JourneyFilter from './journeyFilters'
 import {switchView} from '../actions/actions'
 import RouteFinderView from './routeFinderView'
 import NakedApp from './naked'
