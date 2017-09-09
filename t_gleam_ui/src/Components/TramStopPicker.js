@@ -4,7 +4,6 @@ import { connect } from 'react-redux'
 import { find_route, tramstopSelected, endstopSelected} from '../actions/actions'
 class TramStopPicker extends React.Component {
 
-	//TODO tests???
 
 	fromUpdateValue(evt, data){
 		const { dispatch, tramstops,endTram} = this.props;
@@ -35,8 +34,6 @@ class TramStopPicker extends React.Component {
 
 				if (tramstops.hasOwnProperty(key)) {
 					let option = {};
-
-					//option['label'] = tramstops[key].halt_lang;
 					option['text'] = tramstops[key].halt_lang;
 					option['value'] = tramstops[key].halt_id;
 					options_list.push(option);
@@ -82,7 +79,7 @@ class TramStopPicker extends React.Component {
 						</div>
 					</div>
 					<div className='row'>
-						<div className='three wide column'>
+						<div className='five wide column'>
 							{s2}
 						</div>
 					</div>

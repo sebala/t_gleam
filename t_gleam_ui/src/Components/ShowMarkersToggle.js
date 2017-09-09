@@ -1,8 +1,8 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
-import { switchGlobalMapMarkers} from '../actions/actions'
-import { Button, Checkbox} from 'semantic-ui-react'
+import { switchGlobalMapMarkers } from '../actions/actions'
+import { Button } from 'semantic-ui-react'
 
 const ShowMarkersToggle = ({showMarkers, dispatch}) => {
     const localClick = () => switchGlobalMapMarkers(dispatch, !showMarkers);
