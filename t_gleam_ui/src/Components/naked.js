@@ -1,6 +1,6 @@
 /* eslint-disable */
 //Disable all warnings since this is just a "playground" to try
-//random ideas/layouts
+//random ideas/layouts/et c
 import React from 'react';
 import {
   Button,
