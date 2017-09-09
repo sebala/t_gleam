@@ -1,13 +1,18 @@
 #!/usr/bin/env
 # -*- coding: utf-8 -*-
-
+"""
+A few classes to implement to provide a basic breadth search algorithm
+for finding shortest paths. The main entry point is the Puzzle class.
+When instantiating a Puzzle, clients are expected to provide ACTIONS function
+that accepts a Path, and returns valid actions on that path.
+"""
 from collections import defaultdict
 from heapq import heappush, heappop
 
 
 class Action(object):
     """
-    Models an action whic can be executed
+    Models an action which can be executed
     """
     def __init__(self, end, cost, estimated_cost=0):
         self.end = end
@@ -55,8 +60,10 @@ def build_verticies_with_estimates(list_of_tuples):
         result[to_node].append(to_action)
     return result
 
-#Use a counter to give each Path a id which is used for total_ordering
-#This is needed by for the heapq; although *we* only care about ordering the path_cost
+#Path's are stored in a heapq so use a counter to give each Path
+#a total_ordering
+#Note: *I* only care about ordering the path_cost, but a ordering is needed
+#to resolve tie-breaks
 #see https://docs.python.org/3/library/heapq.html 8.5.2
 #There's probably a cleaner way to do this, but it's there for now
 import itertools
