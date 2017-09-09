@@ -23,10 +23,10 @@ const Navbar = ({dispatch}) => {
     const to_line_view = () => {switchView(dispatch, 'LINE_VIEW')};
     const to_main_view = () => {switchView(dispatch, 'ROUTE_FINDER')}
     const to_experiments = () => {switchView(dispatch, 'EXPERIMENTAL')}
-    return <div className="ui three item menu">
-  <a className="item" onClick={to_main_view}>Home</a>
-  <a className="item" onClick={to_line_view}>Away</a>
-  <a className="item" onClick={to_experiments}>Experiments</a>
+    return <div className="ui two item menu">
+
+  <a className="item" onClick={to_experiments}>Directions</a>
+  <a className="item" onClick={to_line_view}>Tram lines</a>
 </div>
 }
 

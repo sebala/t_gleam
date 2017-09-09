@@ -8,7 +8,7 @@ import * as ActionTypes from './actions/actions'
 const initial_state = {
   start_halte_id: -1,
   shouldShowGlobalMarkers : false,
-  currentView: '',
+  currentView: 'EXPERIMENTAL',
   lat: 47.376848,
   lng: 8.540508,
   trams: [],
@@ -106,7 +106,8 @@ const store = createStore(reducer, initial_state);
 
 ActionTypes.load_tramstops(store.dispatch)
 ActionTypes.load_geo_for_all_stops(store.dispatch)
-ActionTypes.load_nearest_stop(store.dispatch)
+ActionTypes.switchView(store.dispatch, 'EXPERIMENTAL')//
+
 class RenderApp extends React.Component {
   render () {
     return (
