@@ -9,12 +9,16 @@ Assuming you have python3, virtualenv, and npm installed...
 virtualenv -p python3 my_virtual_env  
 source my_virtual_env/bin/activate
 cd t_gleam/route_server
-pip install -r requirements.txt```
+pip install -r requirements.txt
+
+```
 
 Running the tests
+
 ```
 nosetests
 ```
+
 Getting data - only needed for starting the server; warning 500mb download
 ```
 source get_data.sh
