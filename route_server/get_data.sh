@@ -1,0 +1,2 @@
+curl https://data.stadt-zuerich.ch/dataset/vbz_fahrzeiten_ogd/resource/5b74e259-af9c-45ad-ab54-459af819897d/download/fahrzeitensollist2017010820170114.csv > ./data/fahrzeitensollist2017010820170114.csv
+curl https://data.stadt-zuerich.ch/dataset/vbz_fahrzeiten_ogd/resource/5b74e259-af9c-45ad-ab54-459af819897d/download/fahrzeitensollist2017010820170114.csv > ./data/fahrzeitensollist2017010820170114.csv
