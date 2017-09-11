@@ -12,7 +12,6 @@ const Layout = ({ main, navbar, debug }) => (
           <div className="main footer">
             <div className="ui divider"></div>
               { debug }
-              <p>Info</p>
           </div>
       </div>
 )
